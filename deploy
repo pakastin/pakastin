@@ -1,0 +1,3 @@
+#!/bin/bash
+docker context use pakastin
+docker service update --force --with-registry-auth --image ghcr.io/pakastin/pakastin pakastin_pakastin

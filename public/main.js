@@ -23,6 +23,8 @@ function hashChange(initial) {
 
   if (page >= 100 && page < 999) {
     targetPage = page;
+  } else {
+    targetPage = "100";
   }
 }
 
