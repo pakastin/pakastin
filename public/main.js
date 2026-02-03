@@ -2,11 +2,18 @@ const monthNames = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");
 const $pagesContainer = document.querySelector(".pages");
 const $date = document.querySelector(".date");
 const $time = document.querySelector(".time");
+const $teletext = document.querySelector(".teletext");
 const $pageScan = document.querySelector(".page-scan");
 const $currentPage = document.querySelector(".page-current");
+const $weather = document.querySelector(".weather");
 let targetPage = 100;
 let currentPage = "";
 let lastScan = 1000;
+let searchPage = "";
+let searchTime = 0;
+const notFound = {};
+const allowedCharacters = "0123456789";
+
 const scanSpeed = 1.5;
 const loadingPages = { 100: function () {} };
 
@@ -19,19 +26,29 @@ window.addEventListener("resize", resize);
 hashChange(true);
 
 function hashChange(initial) {
-  var page = location.hash.slice(1);
+  const page = location.hash.slice(1);
 
-  if (page >= 100 && page < 999) {
+  if (page >= 100 && page <= 999) {
     targetPage = page;
   } else {
     targetPage = "100";
   }
+  searchPage = "";
 }
 
 function render() {
   requestAnimationFrame(render);
 
   if (targetPage) {
+    if (!searchTime) {
+      searchTime = Date.now();
+    }
+    if (Date.now() - searchTime > 5000) {
+      targetPage = "404";
+      searchTime = 0;
+    }
+    $currentPage.textContent = targetPage;
+
     if (!loadingPages[targetPage]) {
       loadingPages[targetPage] = fetch(`pages/${targetPage}.html`, {
         cache: "no-store",
@@ -43,7 +60,9 @@ function render() {
           $page.style.display = "none";
           $pagesContainer.appendChild($page);
         } else {
-          if (res.status !== 404) {
+          if (res.status === 404) {
+            notFound[targetPage] = true;
+          } else if (res.status !== 404) {
             setTimeout(() => {
               loadingPages[targetPage] = null;
             }, 1000);
@@ -52,14 +71,13 @@ function render() {
       });
     }
 
-    var pageScan = (Math.floor(Date.now() / scanSpeed) % 890) + 100;
+    const pageScan = (Math.floor(Date.now() / scanSpeed) % 890) + 100;
 
     if (lastScan <= targetPage && pageScan >= targetPage) {
       if (getPage(targetPage)) {
         currentPage = targetPage;
-        pageScan = currentPage;
-        $currentPage.textContent = currentPage;
         targetPage = "";
+        searchTime = 0;
       }
     }
 
@@ -70,43 +88,53 @@ function render() {
     } else {
       lastScan = pageScan - 1;
     }
+    $pageScan.classList.add("magenta");
   } else {
     $pageScan.textContent = currentPage;
+    $pageScan.classList.remove("magenta");
     lastScan = 1000;
+  }
+  if (searchPage) {
+    if (searchPage.length < 3) {
+      $currentPage.textContent = searchPage.padEnd(3, " ");
+    } else {
+      location.hash = `#${searchPage}`;
+      searchPage = "";
+    }
   }
 }
 
 tick();
 
 function tick() {
-  var nextTick = (1000 - Date.now()) % 1000;
+  const nextTick = (1000 - Date.now()) % 1000;
   setTimeout(tick, nextTick);
 
-  var date = new Date();
+  const date = new Date();
 
-  var day = String(date.getDate()).padStart(2, "0");
-  var mon = monthNames[date.getMonth()];
-  var year = date.getFullYear();
+  const day = String(date.getDate()).padStart(2, "0");
+  const mon = monthNames[date.getMonth()];
+  const year = date.getFullYear();
   $date.textContent = `${day} ${mon} ${year}`;
 
-  var hh = String(date.getHours()).padStart(2, "0");
-  var mm = String(date.getMinutes()).padStart(2, "0");
-  var ss = String(date.getSeconds()).padStart(2, "0");
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  const ss = String(date.getSeconds()).padStart(2, "0");
   $time.textContent = `${hh}:${mm}:${ss}`;
 }
 
 function resize() {
-  var fontSize =
-    Math.min(window.innerHeight / 26, window.innerWidth / (42 * 0.6)) + "px";
-  document.body.style.fontSize = fontSize;
+  const scale =
+    Math.min(window.innerHeight / 26, window.innerWidth / (42 * 0.6)) / 16;
+  $teletext.style.transform = `scale(${scale})`;
 }
 
 function getPage(page) {
-  var $pages = document.querySelectorAll(".page");
-  var $targetPage = document.body.querySelector(`.page-${page}`);
+  const $pages = document.querySelectorAll(".page");
+  const $targetPage = document.body.querySelector(`.page-${page}`);
 
   if ($targetPage) {
-    for (var i = 0; i < $pages.length; i++) {
+    for (let i = 0; i < $pages.length; i++) {
       if ($pages[i].classList.contains(`page-${page}`)) {
         $pages[i].style.display = "";
       } else {
@@ -114,7 +142,38 @@ function getPage(page) {
       }
     }
     return true;
-  } else {
-    targetPage = "404";
   }
 }
+
+getWeather();
+
+async function getWeather() {
+  const { properties } = await fetch(
+    "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=61.49911&lon=23.78712",
+  ).then((res) => res.json());
+
+  const { air_temperature, wind_speed } =
+    properties.timeseries[0].data.instant.details;
+  $weather.innerHTML = `Tampere, Finland ${humanTemp(air_temperature)} (${humanWind(wind_speed)})`;
+}
+
+function humanTemp(temp) {
+  if (temp < 0) {
+    return `<span class="cyan">${temp}°C</span>`;
+  } else {
+    return `<span class="yellow">+${temp}°C</span>`;
+  }
+}
+
+function humanWind(wind) {
+  return `${wind} m/s`;
+}
+
+window.addEventListener("keypress", (e) => {
+  if (allowedCharacters.includes(e.key)) {
+    if (searchPage.length < 1 && e.key < 1) {
+      return;
+    }
+    searchPage += e.key;
+  }
+});

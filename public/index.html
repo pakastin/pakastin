@@ -7,7 +7,7 @@
     <meta property="og:description" content="Welcome to my Teletext website!" />
     <meta property="og:url" content="https://pakastin.fi" />
     <meta property="og:image" content="https://pakastin.fi/og.png" />
-    <title>Pakastin.fi</title>
+    <title>Juha Lindstedt - Web Architect</title>
     <style>
       body {
         background-color: #111;
@@ -46,6 +46,7 @@
         color: #fff;
         margin: 1em auto;
         overflow: hidden;
+        transform-origin: 50% 0;
       }
       .magenta {
         color: #ff00ff;
@@ -58,6 +59,9 @@
       }
       .yellow {
         color: #ffff00;
+      }
+      .red {
+        color: #ff0000;
       }
       .blue-bg {
         background-color: #0000ff;
@@ -76,14 +80,15 @@
         text-decoration: none;
       }
       a:hover span:not(.right) {
-        color: #ff00ff;
+        background-color: #fff;
+        color: #000;
       }
       .footer {
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
-        background-color: #ffffff;
+        background-color: #ff00ff;
         color: #000000;
       }
       .right {
@@ -96,7 +101,7 @@
     <div class="teletext">
       <div>
         <span class="page-current">100</span>
-        <span class="page-scan magenta">100</span>
+        <span class="page-scan">100</span>
         <span class="title cyan">Pakastin.fi</span>
         <span class="date"></span>
         <span class="time"></span>
@@ -104,7 +109,7 @@
       <div class="pages">
         <div class="page page-100" style="display: none">
           <div class="double blue-bg cyan">Juha Lindstedt</div>
-          <div class="cyan-bg blue">Web architect</div>
+          <div class="cyan-bg blue">Web Architect</div>
           <div class="empty"></div>
           <div class="yellow">
             Welcome to my
@@ -131,12 +136,26 @@
             </div>
           </a>
           <a href="#600">
-            <div class="double"><span class="yellow">600</span> Contact</div>
+            <div class="double"><span class="yellow">600</span> Contact me</div>
           </a>
           <div class="empty"></div>
-          <div class="cyan">
+          <div>
             "Pakastin" is a Finnish word and means "a freezer". It's been my
             portfolio website name since 1999 and my company name since 2006.
+          </div>
+          <br />
+          <div class="weather"></div>
+        </div>
+        <div class="page page-404" style="display: none">
+          <div class="red-bg">Not found</div>
+          <br />
+          <div class="double yellow">Page not found :(</div>
+          <br />
+          <div>Please try some other page.</div>
+          <div class="footer">
+            <a href="#100">
+              <div><span>100</span> Try the front page</div>
+            </a>
           </div>
         </div>
       </div>
