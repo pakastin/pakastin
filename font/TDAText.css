@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "TDATextCondensed";
+  src: url("TDATextCondensed.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TDAText";
+  src: url("TDAText.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}

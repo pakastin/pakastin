@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pakastin.fi</title>
+    <style>
+      body {
+        background-color: #111;
+        font-family:
+          "TDAText",
+          Menlo,
+          Consolas,
+          Monaco,
+          Adwaita Mono,
+          Liberation Mono,
+          Lucida Console,
+          monospace;
+        font-size: 1rem;
+        line-height: 1;
+        overflow: hidden;
+        margin: 1em;
+      }
+      .double {
+        font-size: 2em;
+        font-family:
+          "TDATextCondensed",
+          Menlo,
+          Consolas,
+          Monaco,
+          Adwaita Mono,
+          Liberation Mono,
+          Lucida Console,
+          monospace;
+      }
+      .teletext {
+        position: relative;
+        width: 40ch;
+        height: calc(24 * 1em);
+        background-color: #000;
+        color: #fff;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+      .magenta {
+        color: #ff00ff;
+      }
+      .cyan {
+        color: #00ffff;
+      }
+      .blue {
+        color: #0000ff;
+      }
+      .yellow {
+        color: #ffff00;
+      }
+      .blue-bg {
+        background-color: #0000ff;
+      }
+      .cyan-bg {
+        background-color: #00ffff;
+      }
+      .empty {
+        height: 1em;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover span {
+        color: #ff00ff;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #ffffff;
+        color: #000000;
+      }
+    </style>
+    <link rel="stylesheet" href="font/TDAText.css" />
+  </head>
+  <body>
+    <div class="teletext">
+      <div>
+        <span class="page-current">000</span>
+        <span class="page-scan magenta">999</span>
+        <span class="title cyan">Pakastin.fi</span>
+        <span class="date"></span>
+        <span class="time"></span>
+      </div>
+      <div class="pages">
+        <div class="page page-100" style="display: none">
+          <div class="double blue-bg cyan">Juha Lindstedt</div>
+          <div class="cyan-bg blue">Web architect</div>
+          <div class="empty"></div>
+          <div class="yellow">Welcome to my teletext website!</div>
+          <div class="empty"></div>
+          <a href="#200">
+            <div class="double"><span class="yellow">200</span> About me</div>
+          </a>
+          <a href="#300">
+            <div class="double"><span class="yellow">300</span> Work</div>
+          </a>
+          <a href="#400">
+            <div class="double">
+              <span class="yellow">400</span> Open source
+            </div></a
+          >
+          <a href="#500">
+            <div class="double">
+              <span class="yellow">500</span> Other projects
+            </div>
+          </a>
+          <a href="#600">
+            <div class="double"><span class="yellow">600</span> Contact</div>
+          </a>
+          <div class="empty"></div>
+          <div>
+            "Pakastin" is a Finnish word and means "a freezer". It's been my
+            portfolio website name since 1999 and my company name since 2006.
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
