@@ -188,12 +188,14 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") {
     targetPage = (((targetPage || currentPage || 100) - 100 + 1) % 900) + 100;
     pageScan = 0;
+    searchPage = "";
   } else if (e.key === "ArrowLeft") {
     targetPage = (((targetPage || currentPage || 100) - 100 - 1) % 900) + 100;
     if (targetPage < 100) {
       targetPage += 900;
     }
     pageScan = 0;
+    searchPage = "";
   }
 });
 
