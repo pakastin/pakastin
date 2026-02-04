@@ -8,13 +8,14 @@ const $currentPage = document.querySelector(".page-current");
 const $weather = document.querySelector(".weather");
 let targetPage = 100;
 let currentPage = "";
-let lastScan = 1000;
 let searchPage = "";
 let searchTime = 0;
+let pageScan = 0;
+let scanStart = 0;
 const notFound = {};
 const allowedCharacters = "0123456789";
 
-const scanSpeed = 1.5;
+const scanSpeed = 1.25;
 const loadingPages = { 100: function () {} };
 
 render();
@@ -29,11 +30,12 @@ function hashChange(initial) {
   const page = location.hash.slice(1);
 
   if (page >= 100 && page <= 999) {
-    targetPage = page;
+    targetPage = Number(page);
   } else {
-    targetPage = "100";
+    targetPage = 100;
   }
   searchPage = "";
+  pageScan = 0;
 }
 
 function render() {
@@ -42,10 +44,6 @@ function render() {
   if (targetPage) {
     if (!searchTime) {
       searchTime = Date.now();
-    }
-    if (Date.now() - searchTime > 5000) {
-      targetPage = "404";
-      searchTime = 0;
     }
     $currentPage.textContent = targetPage;
 
@@ -71,33 +69,49 @@ function render() {
       });
     }
 
-    const pageScan = (Math.floor(Date.now() / scanSpeed) % 890) + 100;
+    if (!pageScan) {
+      pageScan = (Date.now() % 900) + 100;
+      scanStart = pageScan;
+    }
 
-    if (lastScan <= targetPage && pageScan >= targetPage) {
+    if (pageScan > 900) {
+      scanStart = 100;
+    }
+
+    const currentScan = (pageScan % 900) + 100;
+
+    if (
+      (scanStart <= targetPage && targetPage <= currentScan) ||
+      pageScan - scanStart > 1800
+    ) {
+      if (notFound[targetPage]) {
+        getPage(404);
+        currentPage = targetPage;
+        targetPage = 0;
+        searchTime = 0;
+      }
       if (getPage(targetPage)) {
         currentPage = targetPage;
-        targetPage = "";
+        targetPage = 0;
         searchTime = 0;
       }
     }
 
-    $pageScan.textContent = pageScan;
+    pageScan += 10 + Math.floor(Math.random() * 10);
 
-    if (lastScan > pageScan && lastScan < 1000) {
-      lastScan = 0;
-    } else {
-      lastScan = pageScan - 1;
-    }
+    $pageScan.textContent = currentScan;
+
     $pageScan.classList.add("magenta");
   } else {
     $pageScan.textContent = currentPage;
     $pageScan.classList.remove("magenta");
-    lastScan = 1000;
+    pageScan = 0;
   }
   if (searchPage) {
     if (searchPage.length < 3) {
-      $currentPage.textContent = searchPage.padEnd(3, " ");
+      $currentPage.textContent = searchPage.padEnd(3, "-");
     } else {
+      $currentPage.textContent = searchPage;
       location.hash = `#${searchPage}`;
       searchPage = "";
     }
@@ -126,7 +140,8 @@ function tick() {
 function resize() {
   const scale =
     Math.min(window.innerHeight / 26, window.innerWidth / (42 * 0.6)) / 16;
-  $teletext.style.transform = `scale(${scale})`;
+  $teletext.style.transform = `translate(-50%, 0) scale(${scale})`;
+  $teletext.style.transformOrigin = "50% 0";
 }
 
 function getPage(page) {
@@ -168,6 +183,19 @@ function humanTemp(temp) {
 function humanWind(wind) {
   return `${wind} m/s`;
 }
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") {
+    targetPage = (((targetPage || currentPage || 100) - 100 + 1) % 900) + 100;
+    pageScan = 0;
+  } else if (e.key === "ArrowLeft") {
+    targetPage = (((targetPage || currentPage || 100) - 100 - 1) % 900) + 100;
+    if (targetPage < 100) {
+      targetPage += 900;
+    }
+    pageScan = 0;
+  }
+});
 
 window.addEventListener("keypress", (e) => {
   if (allowedCharacters.includes(e.key)) {

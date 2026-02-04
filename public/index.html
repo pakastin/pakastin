@@ -6,9 +6,12 @@
     <meta property="og:title" content="Juha Lindstedt - Web Architect" />
     <meta property="og:description" content="Welcome to my Teletext website!" />
     <meta property="og:url" content="https://pakastin.fi" />
-    <meta property="og:image" content="https://pakastin.fi/og.png" />
+    <meta property="og:image" content="https://pakastin.fi/og2.png" />
     <title>Juha Lindstedt - Web Architect</title>
     <style>
+      html {
+        overflow: hidden;
+      }
       body {
         background-color: #111;
         font-family:
@@ -39,14 +42,20 @@
           monospace;
       }
       .teletext {
-        position: relative;
+        position: fixed;
+        top: 0;
+        left: 50%;
         width: 40ch;
         height: calc(24 * 1em);
         background-color: #000;
         color: #fff;
-        margin: 1em auto;
         overflow: hidden;
-        transform-origin: 50% 0;
+        padding: 1em;
+        box-sizing: padding-box;
+      }
+      .teletext .header {
+        width: 40ch;
+        white-space: nowrap;
       }
       .magenta {
         color: #ff00ff;
@@ -72,6 +81,12 @@
       .red-bg {
         background-color: #ff0000;
       }
+      .magenta-bg {
+        background-color: #ff00ff;
+      }
+      .yellow-bg {
+        background-color: #ffff00;
+      }
       .empty {
         height: 1em;
       }
@@ -85,9 +100,9 @@
       }
       .footer {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        bottom: 1em;
+        left: 1em;
+        right: 1em;
         background-color: #ff00ff;
         color: #000000;
       }
@@ -99,11 +114,10 @@
   </head>
   <body>
     <div class="teletext">
-      <div>
+      <div class="header">
         <span class="page-current">100</span>
         <span class="page-scan">100</span>
-        <span class="title cyan">Pakastin.fi</span>
-        <span class="date"></span>
+        <span class="title cyan">Pakastin.fi</span> <span class="date"></span>
         <span class="time"></span>
       </div>
       <div class="pages">
